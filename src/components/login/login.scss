@@ -1,0 +1,169 @@
+$primary: #11998e;
+$secondary: #38ef7d;
+$white: #fff;
+$gray: #9b9b9b;
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin: 10px auto;
+  width: 50%;
+  max-width: 400px;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid $gray;
+  outline: 0;
+  font-size: 1.3rem;
+  color: $white;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:placeholder-shown ~ .form__label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+  }
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: $gray;
+}
+
+.form__field:focus {
+  ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: $primary;
+    font-weight:700;    
+  }
+  padding-bottom: 6px;  
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, $primary,$secondary);
+  border-image-slice: 1;
+}
+/* reset input */
+.form__field{
+  &:required,&:invalid { box-shadow:none; }
+}
+
+.buttons-container {
+  display: flex;
+  max-width: 400px;
+  margin: auto;
+}
+
+.button {
+  margin: 20px auto 30px;
+  display: table;
+  font-size: 1rem;
+  padding: 10px 30px;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  &--login {
+    background-color: #4caf50;
+  }
+  &--register {
+    background-color: #f2d024;
+  }
+}
+
+
+.separator {
+  max-width: 400px;
+}
+
+
+// Social media login buttons
+
+
+.social-media-login {
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.social-button {
+  background-position: 25px 0px;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: inline-block;
+  height: 50px;
+  line-height: 50px;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: middle;
+  width: 100%;
+  border-radius: 3px;
+  margin: 10px auto;
+  outline: rgb(255, 255, 255) none 0px;
+  padding-left: 20%;
+  transition: all 0.2s cubic-bezier(0.72, 0.01, 0.56, 1) 0s;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+#google-connect {
+  background: transparent url('https://raw.githubusercontent.com/eswarasai/social-login/master/img/google-plus.png') no-repeat scroll 5px 0px / 50px 50px padding-box border-box;
+  border: 1px solid rgb(220, 74, 61);
+}
+
+#google-connect:hover {
+  border-color: rgb(220, 74, 61);
+  background: rgb(220, 74, 61) url('https://raw.githubusercontent.com/eswarasai/social-login/master/img/google-plus-white.png') no-repeat scroll 5px 0px / 50px 50px padding-box border-box;
+  -webkit-transition: all .8s ease-out;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease-out;
+}
+
+#google-connect span {
+  box-sizing: border-box;
+  color: rgb(220, 74, 61);
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  border: 0px none rgb(220, 74, 61);
+  outline: rgb(255, 255, 255) none 0px;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+#google-connect:hover span {
+  color: #FFF;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}

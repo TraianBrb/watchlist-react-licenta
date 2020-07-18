@@ -1,0 +1,32 @@
+$open-sans: 'Open Sans', sans-serif;
+
+.nav {
+  display: flex;
+  max-width: 575px;
+  margin: auto;
+  justify-content: flex-end;
+  padding-top: 10px;
+
+  .nav-button {
+    margin: 5px;
+    font-size: 1rem;
+    padding: 5px 10px;
+    border: none;
+    color: #0d0d0d;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &--watchlist {
+      background-color: #f2d024;
+      &:hover {
+        background-color: lighten($color: #f2d024, $amount: 10);
+      }
+    }
+    &--log-out {
+      background-color: tomato;
+      &:hover {
+        background-color: lighten($color: tomato, $amount: 10);
+      }
+    }
+  }
+}

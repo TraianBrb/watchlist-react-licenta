@@ -43,6 +43,7 @@ const Login = ({history}) => {
           .then(res => {
             if (res.user) {
               appDispatch({user: res.user, type: SET_USER});
+              firebase.database().ref(`users/${res.user.uid}`).set();
               history.push('/watchlist');
             } else {
               console.log('register response without user');

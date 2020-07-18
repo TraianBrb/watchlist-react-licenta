@@ -13,6 +13,7 @@ import Search from './components/search/search';
 import './styles.scss';
 import Movie from './components/movie/movie';
 import Header from './components/header/header';
+import Trailer from './components/trailer/trailer';
 import {appReducer, initialAppState} from './reducers/app-reducer';
 
 export const AppContext = React.createContext(null);
@@ -32,6 +33,7 @@ function App() {
               <Route path="/watchlist" component={Watchlist} />
               <Route path="/search" component={Search} />
               <Route path="/movie" component={Movie} />
+              <Route path="/trailer" component={Trailer} />
 
               <Redirect exact from="/" to="/watchlist" />
               <Route path="*" component={PageNotFound} />

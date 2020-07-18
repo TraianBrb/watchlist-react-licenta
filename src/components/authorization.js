@@ -1,7 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import firebase from 'firebase';
 import Login from './login/login';
-import { useReducer } from 'react';
 import { AppContext } from '../App';
 
 const config = {
@@ -15,7 +14,6 @@ const config = {
 firebase.initializeApp(config);
 
 const Authorization = ({children}) => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || null));
   const { appState } = useContext(AppContext);
   
   console.log('appState: ', appState);

@@ -8,6 +8,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [myMovies, setMyMovies] = useState();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const baseUrl = 'https://api.themoviedb.org/3';
@@ -35,14 +36,32 @@ const Search = () => {
     firebase.database().ref(`users/${user.uid}/${movie.id}`).set(movie);
   };
 
+  const removeFromWatchlist = (movie) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    firebase.database().ref(`users/${user.uid}/${movie.id}`).remove();
+  }
+
+  const movieSaved = (movieId) => myMovies && myMovies.includes(movieId.toString());
+
   useEffect(() => {
-    // const db = firebase.database().ref(`users/${user.uid}`);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const db = firebase.database().ref(`users/${user.uid}`);
+    db.on('value', (snapshot) => {
+      if (snapshot && snapshot.val()) {
+        console.log(snapshot.val());
+        setMyMovies(Object.keys(snapshot.val()));
+      }
+    });
+  }, []);
+ 
+  useEffect(() => {
     if (debouncedSearchTerm) {
       setIsSearching(true);
       fetchSearchResults();
     } else {
       setResults([]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
   return (
@@ -81,9 +100,12 @@ const Search = () => {
                 <p className="result-year">{ result.release_date }</p>
               </div>
             </a>
-            <div className="add-to-watchlist" onClick={() => saveToWatchlist(result)}>
-              <img src="/images/add-icon.svg" alt="add" />
-            </div>
+            {!movieSaved(result.id) && <div className="add-to-watchlist" onClick={() => saveToWatchlist(result)}>
+              <img src="/images/plus.svg" alt="add" />
+            </div>}
+            {movieSaved(result.id) && <div className="add-to-watchlist" onClick={() => removeFromWatchlist(result)}>
+              <img src="/images/tick.svg" alt="add" />
+            </div>}
           </div>  
         ))}
       </div>

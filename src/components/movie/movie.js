@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { useLocation, BrowserRouter as Router } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './movie.scss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import firebase from 'firebase';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -12,6 +13,7 @@ function useQuery() {
 
 const Movie = () => {
   let query = useQuery();
+  const [myMovies, setMyMovies] = useState();
   const [movieDetails, setDetails] = useState({});
   const [movieTrailers, setTrailers] = useState([]);
   const [movieCredits, setCredits] = useState([]);
@@ -70,6 +72,30 @@ const Movie = () => {
 
   };
 
+  const movieSaved = (movieId) => myMovies && myMovies.includes(movieId.toString());
+
+  const saveToWatchlist = (movie) => {
+    console.log(movie);
+    const user = JSON.parse(localStorage.getItem('user'));
+    firebase.database().ref(`users/${user.uid}/${movie.id}`).set(movie);
+  };
+
+  const removeFromWatchlist = (movie) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    firebase.database().ref(`users/${user.uid}/${movie.id}`).remove();
+  }
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const db = firebase.database().ref(`users/${user.uid}`);
+    db.on('value', (snapshot) => {
+      if (snapshot && snapshot.val()) {
+        console.log(snapshot.val());
+        setMyMovies(Object.keys(snapshot.val()));
+      }
+    });
+  }, [])
+
   useEffect(() => {
     fetchMovie();
     console.log(movieTrailers);
@@ -101,15 +127,21 @@ const Movie = () => {
               })}
             </div>
             <div className="movie-cta">
-              <div className="button button1">Play trailer</div>
-              <div className="button button2">
+              <div className="button button1" onClick={() => window.location.href=`/trailer?id=${movieId}&type=${mediaType}`}>Play trailer</div>
+              {!movieSaved(movieId) && <div className="button button2" onClick={() => saveToWatchlist(movieDetails)}>
                 <div className="add-to-watchlist-icon">
                   <svg height="20px" fill="#f2d024" id="Layer_1" version="1.1" viewBox="0 0 32 32" width="20px">
                     <path d="M28,14H18V4c0-1.104-0.896-2-2-2s-2,0.896-2,2v10H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h10v10c0,1.104,0.896,2,2,2  s2-0.896,2-2V18h10c1.104,0,2-0.896,2-2S29.104,14,28,14z"/>
                   </svg>
                 </div>
                 Add to watchlist
-              </div>
+              </div>}
+              {movieSaved(movieId) && <div className="button button2" onClick={() => removeFromWatchlist(movieDetails)}>
+                <div className="add-to-watchlist-icon">
+                  <svg className="add-to-watchlist-icon" id="Capa_1" fill="#f2d024" enableBackground="new 0 0 515.556 515.556" height="512" viewBox="0 0 515.556 515.556" width="512" xmlns="http://www.w3.org/2000/svg"><path d="m0 274.226 176.549 176.886 339.007-338.672-48.67-47.997-290.337 290-128.553-128.552z"/></svg>
+                </div>
+                Added to watchlist
+              </div>}
             </div>
           </div>
         </div>

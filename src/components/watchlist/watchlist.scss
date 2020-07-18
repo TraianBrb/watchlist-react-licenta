@@ -1,3 +1,5 @@
+$open-sans: 'Open Sans', sans-serif;
+
 .body-container {
   width: 100%;
   max-width: 575px;
@@ -76,3 +78,18 @@
       }
   }
 
+.no-movie {
+  display: flex;
+  align-items: center;
+  width: 280px;
+  height: 132px;
+  margin: auto;
+  font-family: $open-sans;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #666666;
+}

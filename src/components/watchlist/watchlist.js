@@ -6,7 +6,7 @@ import { AppContext } from '../../App';
 import { IS_LOADING } from '../../reducers/app-reducer';
 
 const Watchlist = ({history}) => {
-  const [ movies, setMovies ] = useState({});
+  const [ movies, setMovies ] = useState();
   const { appState, appDispatch } = useContext(AppContext);
 
   useEffect(() => {
@@ -17,8 +17,8 @@ const Watchlist = ({history}) => {
       if (snapshot && snapshot.val()) {
         console.log(snapshot.val());
         setMovies(snapshot.val());
-        appDispatch({isLoading: false, type: IS_LOADING});
       }
+      appDispatch({isLoading: false, type: IS_LOADING});
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -35,7 +35,7 @@ const Watchlist = ({history}) => {
         }
         {!appState.isLoading &&
           <ul className="movie-list">
-            {Object.keys(movies).map(movieId => (
+            {movies && Object.keys(movies).map(movieId => (
               <li className="movie" key={movies[movieId].id}>
                 <a href={`/movie?id=${movieId}&type=${movies[movieId].media_type}`}>
                   {movies[movieId].poster_path ? <img src={`http://image.tmdb.org/t/p/w185${movies[movieId].poster_path}`} alt="poster" /> : movies[movieId].title}
@@ -43,11 +43,11 @@ const Watchlist = ({history}) => {
               </li>
             ))}
 
+            {!movies && <p className="no-movie">You didn't save any movie yet. Click on the search movie button.</p>}
+
             <li className="movie add-new-movie">
               <a href={'/search'}>
                 <div className="add-new-movie__icon"></div>
-                {/* <div className="container-search">
-                </div> */}
                 Search movie
               </a>
             </li>

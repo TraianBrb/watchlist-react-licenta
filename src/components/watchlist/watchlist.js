@@ -17,6 +17,8 @@ const Watchlist = ({history}) => {
       if (snapshot && snapshot.val()) {
         console.log(snapshot.val());
         setMovies(snapshot.val());
+      } else {
+        window.location.href = '/search';
       }
       appDispatch({isLoading: false, type: IS_LOADING});
     });

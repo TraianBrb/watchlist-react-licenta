@@ -4,17 +4,38 @@ import axios from 'axios';
 import useDebounce from './use-debounce';
 import './search.scss';
 
+const urlParams = new URLSearchParams(window.location.search);
+const searchValue = urlParams.get('s');
+
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchValue || '');
+  const [trendingWeekly, setTrendingWeekly] = useState([]);
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [myMovies, setMyMovies] = useState();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
+  
   const baseUrl = 'https://api.themoviedb.org/3';
   const method = '/search/multi';
   const apiKey = process.env.REACT_APP_MOVIE_DB_KEY;
   const adult = 'false';
+  const trendingWeeklyUrl = `https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}`
+
+  const fetchTrending = () => {
+    axios
+      .get(trendingWeeklyUrl)
+      .then((res) => {
+        console.log(res.data.reuslts);
+        setIsSearching(false);
+        setTrendingWeekly(res.data.results.filter(results => results.media_type !== 'person'));
+      })
+      .catch((error) => {
+        console.log(error);
+        setTrendingWeekly([]);
+      });
+  }
+
   const fetchSearchResults = () => {
     const searchUrl = `${baseUrl}${method}?api_key=${apiKey}&query=${searchTerm}&include_adult=${adult}`;
     axios
@@ -22,7 +43,7 @@ const Search = () => {
       .then((res) => {
         console.log(res.data.reuslts);
         setIsSearching(false);
-        setResults(res.data.results);
+        setResults(res.data.results.filter(results => results.media_type !== 'person'));
       })
       .catch((error) => {
         console.log(error);
@@ -41,6 +62,12 @@ const Search = () => {
     firebase.database().ref(`users/${user.uid}/${movie.id}`).remove();
   }
 
+  const startSearch = (value) => {
+    setSearchTerm(value);
+    var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?s=${value}`;
+    window.history.pushState({path:newurl},'',newurl);
+  }
+
   const movieSaved = (movieId) => myMovies && myMovies.includes(movieId.toString());
 
   useEffect(() => {
@@ -52,6 +79,8 @@ const Search = () => {
         setMyMovies(Object.keys(snapshot.val()));
       }
     });
+    fetchTrending();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
  
   useEffect(() => {
@@ -68,8 +97,8 @@ const Search = () => {
     <div className="body-container">
       <div className="container-search-form">
         <div className="search-form">
-          <input type="text" id="search-value" name="search" autoComplete="off" onChange={(e) => setSearchTerm(e.target.value)} value={searchTerm} />
-          <div id="erase-input" onClick={() => setSearchTerm('')}>
+          <input type="text" id="search-value" name="search" autoComplete="off" onChange={(e) => startSearch(e.target.value)} value={searchTerm} />
+          <div id="erase-input" onClick={() => startSearch('')}>
             <img src="/images/close-icon.svg" alt="delete" />
           </div>
 
@@ -83,18 +112,22 @@ const Search = () => {
 
         {!isSearching && !results.length &&
           <div className="search-results-placeholder">
-            Are you <span className="bold">READY, PLAYER ONE</span> (2018)? 
-            Because <span className="bold">WHAT WE STARTED</span> (2018), <span className="bold">I CAN ONLY IMAGINE</span> (2018) will <span className="bold">ALLURE</span> (2018) <span className="bold">JOSIE</span> (2018).
-            <br/>
-            <br/>
-            <span className="bold">LOVE, SIMON</span> (2018).
+            <p>Trending this week:</p>
+            {trendingWeekly.length && trendingWeekly.map(result => (
+              <div className="trending-item" key={`treding-${result.id}`} onClick={() => startSearch(result.title || result.original_title || result.original_name)}>
+                { result.title || result.original_title || result.original_name }
+              </div>
+            ))
+            }
           </div>
         }
 
         {!isSearching && results.map(result => (
           <div className="result-item" key={`movie-${result.id}`}>
             <a className="result-link" href={`/movie?id=${result.id}&type=${result.media_type}`}>
-              {result.poster_path ? <img src={"http://image.tmdb.org/t/p/w185" + result.poster_path} alt="poster"></img> : ''}
+              <div className="result-image">
+                {result.poster_path ? <img src={"http://image.tmdb.org/t/p/w185" + result.poster_path} alt="poster"></img> : ''}
+              </div>
               <div className="container-title-year">
                 <p className="result-title">{ result.title || result.original_title || result.original_name }</p>
                 <p className="result-year">{ result.release_date }</p>

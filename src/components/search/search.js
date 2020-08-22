@@ -130,7 +130,7 @@ const Search = () => {
               </div>
               <div className="container-title-year">
                 <p className="result-title">{ result.title || result.original_title || result.original_name }</p>
-                <p className="result-year">{ result.release_date }</p>
+                <p className="result-year">{ result.release_date || result.first_air_date }</p>
               </div>
             </a>
             {!movieSaved(result.id) && <div className="add-to-watchlist" onClick={() => saveToWatchlist(result)}>

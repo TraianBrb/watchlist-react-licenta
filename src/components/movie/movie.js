@@ -77,7 +77,7 @@ const Movie = () => {
   const saveToWatchlist = (movie) => {
     console.log(movie);
     const user = JSON.parse(localStorage.getItem('user'));
-    firebase.database().ref(`users/${user.uid}/${movie.id}`).set(movie);
+    firebase.database().ref(`users/${user.uid}/${movie.id}`).set({...movie, media_type: mediaType});
   };
 
   const removeFromWatchlist = (movie) => {
